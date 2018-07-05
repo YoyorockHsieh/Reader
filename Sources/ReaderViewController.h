@@ -40,7 +40,9 @@
 @interface ReaderViewController : UIViewController
 
 @property (nonatomic, weak, readwrite) id <ReaderViewControllerDelegate> delegate;
+@property (nonatomic, strong) UIImage *doneButtonImage;
 
 - (instancetype)initWithReaderDocument:(ReaderDocument *)object;
+- (instancetype)initWithReaderDocument:(ReaderDocument *)object doneButton:(UIImage *)doneButtonImag;
 
 @end

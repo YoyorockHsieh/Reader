@@ -288,31 +288,38 @@
 
 - (instancetype)initWithReaderDocument:(ReaderDocument *)object
 {
-	if ((self = [super initWithNibName:nil bundle:nil])) // Initialize superclass
-	{
-		if ((object != nil) && ([object isKindOfClass:[ReaderDocument class]])) // Valid object
-		{
-			userInterfaceIdiom = [UIDevice currentDevice].userInterfaceIdiom; // User interface idiom
-
-			NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter]; // Default notification center
-
-			[notificationCenter addObserver:self selector:@selector(applicationWillResign:) name:UIApplicationWillTerminateNotification object:nil];
-
-			[notificationCenter addObserver:self selector:@selector(applicationWillResign:) name:UIApplicationWillResignActiveNotification object:nil];
-
-			scrollViewOutset = ((userInterfaceIdiom == UIUserInterfaceIdiomPad) ? SCROLLVIEW_OUTSET_LARGE : SCROLLVIEW_OUTSET_SMALL);
-
-			[object updateDocumentProperties]; document = object; // Retain the supplied ReaderDocument object for our use
-
-			[ReaderThumbCache touchThumbCacheWithGUID:object.guid]; // Touch the document thumb cache directory
-		}
-		else // Invalid ReaderDocument object
-		{
-			self = nil;
-		}
-	}
-
+    self = [self initWithReaderDocument:object doneButton:nil];
 	return self;
+}
+
+- (instancetype)initWithReaderDocument:(ReaderDocument *)object doneButton:(UIImage *)doneButtonImag {
+    if ((self = [super initWithNibName:nil bundle:nil])) // Initialize superclass
+    {
+        if ((object != nil) && ([object isKindOfClass:[ReaderDocument class]])) // Valid object
+        {
+            _doneButtonImage = doneButtonImag;
+            
+            userInterfaceIdiom = [UIDevice currentDevice].userInterfaceIdiom; // User interface idiom
+            
+            NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter]; // Default notification center
+            
+            [notificationCenter addObserver:self selector:@selector(applicationWillResign:) name:UIApplicationWillTerminateNotification object:nil];
+            
+            [notificationCenter addObserver:self selector:@selector(applicationWillResign:) name:UIApplicationWillResignActiveNotification object:nil];
+            
+            scrollViewOutset = ((userInterfaceIdiom == UIUserInterfaceIdiomPad) ? SCROLLVIEW_OUTSET_LARGE : SCROLLVIEW_OUTSET_SMALL);
+            
+            [object updateDocumentProperties]; document = object; // Retain the supplied ReaderDocument object for our use
+            
+            [ReaderThumbCache touchThumbCacheWithGUID:object.guid]; // Touch the document thumb cache directory
+        }
+        else // Invalid ReaderDocument object
+        {
+            self = nil;
+        }
+    }
+    
+    return self;
 }
 
 - (void)dealloc
@@ -330,20 +337,20 @@
 
 	UIView *fakeStatusBar = nil; CGRect viewRect = self.view.bounds; // View bounds
 
-	if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) // iOS 7+
-	{
-		if ([self prefersStatusBarHidden] == NO) // Visible status bar
-		{
-			CGRect statusBarRect = viewRect; statusBarRect.size.height = STATUS_HEIGHT;
-			fakeStatusBar = [[UIView alloc] initWithFrame:statusBarRect]; // UIView
-			fakeStatusBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-			fakeStatusBar.backgroundColor = [UIColor blackColor];
-			fakeStatusBar.contentMode = UIViewContentModeRedraw;
-			fakeStatusBar.userInteractionEnabled = NO;
-
-			viewRect.origin.y += STATUS_HEIGHT; viewRect.size.height -= STATUS_HEIGHT;
-		}
-	}
+//    if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) // iOS 7+
+//    {
+//        if ([self prefersStatusBarHidden] == NO) // Visible status bar
+//        {
+//            CGRect statusBarRect = viewRect; statusBarRect.size.height = STATUS_HEIGHT;
+//            fakeStatusBar = [[UIView alloc] initWithFrame:statusBarRect]; // UIView
+//            fakeStatusBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+//            fakeStatusBar.backgroundColor = [UIColor blackColor];
+//            fakeStatusBar.contentMode = UIViewContentModeRedraw;
+//            fakeStatusBar.userInteractionEnabled = NO;
+//
+//            viewRect.origin.y += STATUS_HEIGHT; viewRect.size.height -= STATUS_HEIGHT;
+//        }
+//    }
 
 	CGRect scrollViewRect = CGRectInset(viewRect, -scrollViewOutset, 0.0f);
 	theScrollView = [[UIScrollView alloc] initWithFrame:scrollViewRect]; // All
@@ -355,15 +362,40 @@
 	[self.view addSubview:theScrollView];
 
 	CGRect toolbarRect = viewRect; toolbarRect.size.height = TOOLBAR_HEIGHT;
-	mainToolbar = [[ReaderMainToolbar alloc] initWithFrame:toolbarRect document:document]; // ReaderMainToolbar
+    mainToolbar.backgroundColor = [UIColor redColor];
+    
+	mainToolbar = [[ReaderMainToolbar alloc] initWithFrame:toolbarRect document:document doneButtonImage:_doneButtonImage]; // ReaderMainToolbar
 	mainToolbar.delegate = self; // ReaderMainToolbarDelegate
-	[self.view addSubview:mainToolbar];
+    mainToolbar.backgroundColor = nil;
+    [self.view addSubview:mainToolbar];
+    mainToolbar.translatesAutoresizingMaskIntoConstraints = false;
+    [NSLayoutConstraint activateConstraints:@[[mainToolbar.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+                                              [mainToolbar.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+                                              [mainToolbar.heightAnchor constraintEqualToConstant:TOOLBAR_HEIGHT]]];
+    if (@available(iOS 11.0, *)) {
+        [[mainToolbar.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor] setActive:YES];
+    } else {
+        // Fallback on earlier versions
+        [[mainToolbar.topAnchor constraintEqualToAnchor:self.view.layoutMarginsGuide.topAnchor] setActive:YES];
+    }
+    
 
 	CGRect pagebarRect = self.view.bounds; pagebarRect.size.height = PAGEBAR_HEIGHT;
 	pagebarRect.origin.y = (self.view.bounds.size.height - pagebarRect.size.height);
 	mainPagebar = [[ReaderMainPagebar alloc] initWithFrame:pagebarRect document:document]; // ReaderMainPagebar
+    mainPagebar.backgroundColor = nil;
 	mainPagebar.delegate = self; // ReaderMainPagebarDelegate
 	[self.view addSubview:mainPagebar];
+    mainPagebar.translatesAutoresizingMaskIntoConstraints = false;
+    [NSLayoutConstraint activateConstraints:@[[mainPagebar.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+                                              [mainPagebar.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+                                              [mainPagebar.heightAnchor constraintEqualToConstant:PAGEBAR_HEIGHT]]];
+    if (@available(iOS 11.0, *)) {
+        [[mainPagebar.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor] setActive:YES];
+    } else {
+        // Fallback on earlier versions
+        [[mainPagebar.bottomAnchor constraintEqualToAnchor:self.view.layoutMarginsGuide.bottomAnchor] setActive:YES];
+    }
 
 	if (fakeStatusBar != nil) [self.view addSubview:fakeStatusBar]; // Add status bar background view
 
@@ -454,12 +486,12 @@
 
 - (BOOL)prefersStatusBarHidden
 {
-	return YES;
+	return NO;
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
-	return UIStatusBarStyleLightContent;
+	return UIStatusBarStyleDefault;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

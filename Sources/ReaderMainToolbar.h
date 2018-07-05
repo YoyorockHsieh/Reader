@@ -46,8 +46,10 @@
 @interface ReaderMainToolbar : UIXToolbarView
 
 @property (nonatomic, weak, readwrite) id <ReaderMainToolbarDelegate> delegate;
+@property (nonatomic, strong) UIImage *doneButtonImage;
 
 - (instancetype)initWithFrame:(CGRect)frame document:(ReaderDocument *)document;
+- (instancetype)initWithFrame:(CGRect)frame document:(ReaderDocument *)document doneButtonImage:(UIImage *)doneButtonImage;
 
 - (void)setBookmarkState:(BOOL)state;
 
