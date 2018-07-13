@@ -31,11 +31,15 @@
 #import "ReaderContentView.h"
 #import "ReaderThumbCache.h"
 #import "ReaderThumbQueue.h"
+#import "ContentsTableViewController.h"
+#import "PDFContentsHelper.h"
 
 #import <MessageUI/MessageUI.h>
 
 @interface ReaderViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate, MFMailComposeViewControllerDelegate, UIDocumentInteractionControllerDelegate,
-									ReaderMainToolbarDelegate, ReaderMainPagebarDelegate, ReaderContentViewDelegate, ThumbsViewControllerDelegate>
+									ReaderMainToolbarDelegate, ReaderMainPagebarDelegate, ReaderContentViewDelegate, ThumbsViewControllerDelegate, ContentsTableViewControllerDelegate>
+
+@property (nonatomic, strong) NSArray<PDFContents *> *contents;
 @end
 
 @implementation ReaderViewController
@@ -288,16 +292,17 @@
 
 - (instancetype)initWithReaderDocument:(ReaderDocument *)object
 {
-    self = [self initWithReaderDocument:object doneButton:nil];
+    self = [self initWithReaderDocument:object doneButton:nil contentsButton:nil];
 	return self;
 }
 
-- (instancetype)initWithReaderDocument:(ReaderDocument *)object doneButton:(UIImage *)doneButtonImag {
+- (instancetype)initWithReaderDocument:(ReaderDocument *)object doneButton:(UIImage *)doneButtonImag contentsButton:(UIImage *)contentsButtonImage {
     if ((self = [super initWithNibName:nil bundle:nil])) // Initialize superclass
     {
         if ((object != nil) && ([object isKindOfClass:[ReaderDocument class]])) // Valid object
         {
             _doneButtonImage = doneButtonImag;
+            _contentsButtonImage = contentsButtonImage;
             
             userInterfaceIdiom = [UIDevice currentDevice].userInterfaceIdiom; // User interface idiom
             
@@ -312,6 +317,8 @@
             [object updateDocumentProperties]; document = object; // Retain the supplied ReaderDocument object for our use
             
             [ReaderThumbCache touchThumbCacheWithGUID:object.guid]; // Touch the document thumb cache directory
+            PDFContentsHelper *helper = [[PDFContentsHelper alloc] initWithPDFPath:document.fileURL.path];
+            self.contents = [helper getPDFContents];
         }
         else // Invalid ReaderDocument object
         {
@@ -364,7 +371,8 @@
 	CGRect toolbarRect = viewRect; toolbarRect.size.height = TOOLBAR_HEIGHT;
     mainToolbar.backgroundColor = [UIColor redColor];
     
-	mainToolbar = [[ReaderMainToolbar alloc] initWithFrame:toolbarRect document:document doneButtonImage:_doneButtonImage]; // ReaderMainToolbar
+    BOOL shouldShowContents = _contents != nil && _contents.count > 0;
+	mainToolbar = [[ReaderMainToolbar alloc] initWithFrame:toolbarRect document:document doneButtonImage:_doneButtonImage contentsButtonImage:_contentsButtonImage shouldShowContents:shouldShowContents];
 	mainToolbar.delegate = self; // ReaderMainToolbarDelegate
     mainToolbar.backgroundColor = nil;
     [self.view addSubview:mainToolbar];
@@ -877,6 +885,18 @@
 #endif // end of READER_BOOKMARKS Option
 }
 
+- (void)tappedInToolbar:(ReaderMainToolbar *)toolbar contentButton:(UIButton *)button {
+    ContentsTableViewController *vc = [[ContentsTableViewController alloc] initWithContents:_contents];
+    vc.delegate = self;
+    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
+//    [nc setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+//    [nc setModalPresentationStyle:UIModalPresentationOverCurrentContext];
+    UIBarButtonItem *dismissButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(dismissContent:)];
+    [dismissButton setTintColor:[UIColor darkGrayColor]];
+    vc.navigationItem.rightBarButtonItem = dismissButton;
+    [self presentViewController:nc animated:YES completion:nil];
+}
+
 #pragma mark - MFMailComposeViewControllerDelegate methods
 
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
@@ -929,6 +949,17 @@
 	[document archiveDocumentProperties]; // Save any ReaderDocument changes
 
 	if (userInterfaceIdiom == UIUserInterfaceIdiomPad) if (printInteraction != nil) [printInteraction dismissAnimated:NO];
+}
+
+#pragma ContentsTableviewControllerDelegate
+
+- (void)gotoPage:(NSInteger)page {
+    [self showDocumentPage:page];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)dismissContent:(UIViewController *)vc {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

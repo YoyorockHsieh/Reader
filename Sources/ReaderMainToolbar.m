@@ -42,7 +42,7 @@
 #define BUTTON_X 6.0f
 #define BUTTON_Y 6.0f
 
-#define BUTTON_SPACE 8.0f
+#define BUTTON_SPACE 12.0f
 #define BUTTON_HEIGHT 32.0f
 
 #define BUTTON_FONT_SIZE 15.0f
@@ -64,13 +64,14 @@
 	return [self initWithFrame:frame document:nil];
 }
 
-- (instancetype)initWithFrame:(CGRect)frame document:(ReaderDocument *)document doneButtonImage:(UIImage *)doneButtonImage
+- (instancetype)initWithFrame:(CGRect)frame document:(ReaderDocument *)document doneButtonImage:(UIImage *)doneButtonImage contentsButtonImage:(UIImage *)contentsButtonImage shouldShowContents:(BOOL)showContents
 {
     assert(document != nil); // Must have a valid ReaderDocument
     
     if ((self = [super initWithFrame:frame]))
     {
         _doneButtonImage = doneButtonImage;
+        _contentsButtonImage = contentsButtonImage;
         CGFloat viewWidth = self.bounds.size.width; // Toolbar view width
         
 #if (READER_FLAT_UI == TRUE) // Option
@@ -116,10 +117,27 @@
         titleX += (doneButtonWidth + buttonSpacing); titleWidth -= (doneButtonWidth + buttonSpacing);
         
 #endif // end of READER_STANDALONE Option
+        if (showContents) {
+            UIButton *contentsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            CGFloat leftPosition = (viewWidth - iconButtonWidth - buttonSpacing); // Position
+            contentsButton.frame = CGRectMake(leftPosition, BUTTON_Y, iconButtonWidth, BUTTON_HEIGHT);
+            if (_contentsButtonImage != nil) {
+                [contentsButton setImage:_contentsButtonImage forState:UIControlStateNormal];
+            } else {
+                [contentsButton setImage:[UIImage imageNamed:@"Reader-Thumbs"] forState:UIControlStateNormal];
+            }
+            [contentsButton addTarget:self action:@selector(contentsButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+            contentsButton.autoresizingMask = UIViewAutoresizingNone;
+            contentsButton.exclusiveTouch = YES;
+            
+            [self addSubview:contentsButton]; //leftButtonX += (iconButtonWidth + buttonSpacing);
+            
+            titleX += (iconButtonWidth + buttonSpacing); titleWidth -= (iconButtonWidth + buttonSpacing);
+        }
         
 #if (READER_ENABLE_THUMBS == TRUE) // Option
-        
         UIButton *thumbsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        
         thumbsButton.frame = CGRectMake(leftButtonX, BUTTON_Y, iconButtonWidth, BUTTON_HEIGHT);
         [thumbsButton setImage:[UIImage imageNamed:@"Reader-Thumbs"] forState:UIControlStateNormal];
         [thumbsButton addTarget:self action:@selector(thumbsButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
@@ -132,7 +150,6 @@
         [self addSubview:thumbsButton]; //leftButtonX += (iconButtonWidth + buttonSpacing);
         
         titleX += (iconButtonWidth + buttonSpacing); titleWidth -= (iconButtonWidth + buttonSpacing);
-        
 #endif // end of READER_ENABLE_THUMBS Option
         
         CGFloat rightButtonX = viewWidth; // Right-side buttons start X position
@@ -253,7 +270,7 @@
 
 - (instancetype)initWithFrame:(CGRect)frame document:(ReaderDocument *)document
 {
-    self = [self initWithFrame:frame document:document doneButtonImage:nil];
+    self = [self initWithFrame:frame document:document doneButtonImage:nil contentsButtonImage:nil shouldShowContents:NO];
     return self;
 }
 
@@ -362,6 +379,11 @@
 - (void)markButtonTapped:(UIButton *)button
 {
 	[delegate tappedInToolbar:self markButton:button];
+}
+
+- (void)contentsButtonTapped:(UIButton *)button
+{
+    [delegate tappedInToolbar:self contentButton:button];
 }
 
 @end

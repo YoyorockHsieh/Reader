@@ -40,6 +40,7 @@
 - (void)tappedInToolbar:(ReaderMainToolbar *)toolbar printButton:(UIButton *)button;
 - (void)tappedInToolbar:(ReaderMainToolbar *)toolbar emailButton:(UIButton *)button;
 - (void)tappedInToolbar:(ReaderMainToolbar *)toolbar markButton:(UIButton *)button;
+- (void)tappedInToolbar:(ReaderMainToolbar *)toolbar contentButton:(UIButton *)button;
 
 @end
 
@@ -47,9 +48,14 @@
 
 @property (nonatomic, weak, readwrite) id <ReaderMainToolbarDelegate> delegate;
 @property (nonatomic, strong) UIImage *doneButtonImage;
+@property (nonatomic, strong) UIImage *contentsButtonImage;
 
 - (instancetype)initWithFrame:(CGRect)frame document:(ReaderDocument *)document;
-- (instancetype)initWithFrame:(CGRect)frame document:(ReaderDocument *)document doneButtonImage:(UIImage *)doneButtonImage;
+- (instancetype)initWithFrame:(CGRect)frame
+                     document:(ReaderDocument *)document
+              doneButtonImage:(UIImage *)doneButtonImage
+          contentsButtonImage:(UIImage *)contentsButtonImage
+           shouldShowContents:(BOOL)showContents;
 
 - (void)setBookmarkState:(BOOL)state;
 

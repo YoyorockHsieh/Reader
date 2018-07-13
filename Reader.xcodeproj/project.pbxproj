@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1224016320F84B390076B9B2 /* ContentsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1224016220F84B390076B9B2 /* ContentsTableViewController.m */; };
+		1224016820F84B460076B9B2 /* PDFContents.m in Sources */ = {isa = PBXBuildFile; fileRef = 1224016520F84B460076B9B2 /* PDFContents.m */; };
+		1224016920F84B460076B9B2 /* PDFContentsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1224016720F84B460076B9B2 /* PDFContentsHelper.m */; };
+		1224016C20F84B5C0076B9B2 /* VoyeurNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1224016B20F84B5C0076B9B2 /* VoyeurNode.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
@@ -72,6 +76,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1224016120F84B380076B9B2 /* ContentsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContentsTableViewController.h; path = Sources/ContentsTableViewController.h; sourceTree = "<group>"; };
+		1224016220F84B390076B9B2 /* ContentsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ContentsTableViewController.m; path = Sources/ContentsTableViewController.m; sourceTree = "<group>"; };
+		1224016420F84B450076B9B2 /* PDFContentsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDFContentsHelper.h; path = Sources/PDFContentsHelper.h; sourceTree = "<group>"; };
+		1224016520F84B460076B9B2 /* PDFContents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDFContents.m; path = Sources/PDFContents.m; sourceTree = "<group>"; };
+		1224016620F84B460076B9B2 /* PDFContents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDFContents.h; path = Sources/PDFContents.h; sourceTree = "<group>"; };
+		1224016720F84B460076B9B2 /* PDFContentsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDFContentsHelper.m; path = Sources/PDFContentsHelper.m; sourceTree = "<group>"; };
+		1224016A20F84B5C0076B9B2 /* VoyeurNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VoyeurNode.h; path = Sources/VoyeurNode.h; sourceTree = "<group>"; };
+		1224016B20F84B5C0076B9B2 /* VoyeurNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VoyeurNode.m; path = Sources/VoyeurNode.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* Reader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -342,6 +354,14 @@
 				45AB7312141FC0B1003524C3 /* ThumbsViewController.m */,
 				45AB730F141FC0B1003524C3 /* ThumbsMainToolbar.h */,
 				45AB7310141FC0B1003524C3 /* ThumbsMainToolbar.m */,
+				1224016120F84B380076B9B2 /* ContentsTableViewController.h */,
+				1224016220F84B390076B9B2 /* ContentsTableViewController.m */,
+				1224016620F84B460076B9B2 /* PDFContents.h */,
+				1224016520F84B460076B9B2 /* PDFContents.m */,
+				1224016420F84B450076B9B2 /* PDFContentsHelper.h */,
+				1224016720F84B460076B9B2 /* PDFContentsHelper.m */,
+				1224016A20F84B5C0076B9B2 /* VoyeurNode.h */,
+				1224016B20F84B5C0076B9B2 /* VoyeurNode.m */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -479,7 +499,9 @@
 				45AB7314141FC0B1003524C3 /* ReaderConstants.m in Sources */,
 				45AB7315141FC0B1003524C3 /* ReaderContentPage.m in Sources */,
 				45AB7316141FC0B1003524C3 /* ReaderContentTile.m in Sources */,
+				1224016920F84B460076B9B2 /* PDFContentsHelper.m in Sources */,
 				45AB7317141FC0B1003524C3 /* ReaderContentView.m in Sources */,
+				1224016820F84B460076B9B2 /* PDFContents.m in Sources */,
 				45AB7318141FC0B1003524C3 /* ReaderDocument.m in Sources */,
 				45AB7319141FC0B1003524C3 /* ReaderMainPagebar.m in Sources */,
 				45AB731A141FC0B1003524C3 /* ReaderMainToolbar.m in Sources */,
@@ -491,7 +513,9 @@
 				45AB7321141FC0B1003524C3 /* ReaderThumbsView.m in Sources */,
 				45AB7322141FC0B1003524C3 /* ReaderThumbView.m in Sources */,
 				45AB7323141FC0B1003524C3 /* ReaderViewController.m in Sources */,
+				1224016320F84B390076B9B2 /* ContentsTableViewController.m in Sources */,
 				45AB7324141FC0B1003524C3 /* ThumbsMainToolbar.m in Sources */,
+				1224016C20F84B5C0076B9B2 /* VoyeurNode.m in Sources */,
 				45AB7325141FC0B1003524C3 /* ThumbsViewController.m in Sources */,
 				4555C74C14211A00005F448D /* ReaderBookDelegate.m in Sources */,
 				455C7891142687CA0053D73B /* UIXToolbarView.m in Sources */,
