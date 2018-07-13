@@ -384,7 +384,7 @@
         [[mainToolbar.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor] setActive:YES];
     } else {
         // Fallback on earlier versions
-        [[mainToolbar.topAnchor constraintEqualToAnchor:self.view.layoutMarginsGuide.topAnchor] setActive:YES];
+        [[mainToolbar.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:STATUS_HEIGHT] setActive:YES];
     }
     
 
